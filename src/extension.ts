@@ -114,9 +114,9 @@ class TravisStatusBar {
                 if(response.statusCode === 200) {
                     const buildResponse = JSON.parse(response.body);
                     if (buildResponse.builds.length > 0) {
-                        this.statusBarItem.text = `Build Status: ${buildResponse.builds[0].state}`;
+                        this.statusBarItem.text = `Build Status(${this.slug}): ${buildResponse.builds[0].state}`;
                     } else {
-                        this.statusBarItem.text = "Build Status: unknown";
+                        this.statusBarItem.text = "Build Status(${this.slug}): unknown";
                     }
                     this.statusBarItem.show();
                 }
