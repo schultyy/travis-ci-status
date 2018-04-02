@@ -1,48 +1,26 @@
 # travis-ci-status
 
-This is a Visual Studio Code extension that allows you to view the Travis CI build status of your project.
+This is a Visual Studio Code extension that allows you to view the Travis CI build status of your project. This extension works with both travis-ci.com and travis-ci.org.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+> Please note that each command is available for travis-ci.org and travis-ci.com. Down below you'll find instructions for travis-ci.org. If your project is built on travis-ci.com, please select the respective travis-ci.com menu point.
 
-For example if there is an image subfolder under your extension project workspace:
+First you need to configure your API token (only required once). You can get yours from `https://travis-ci.org/profile/<your username>`. Then, hit `Ctrl+Shift+P` to open the command palette. Type in `Configure travis-ci.org API token` and hit return.
 
-\!\[feature X\]\(images/feature-x.png\)
+![Configure token](images/configure-token.png)
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+After that it'll try to obtain the status on Travis CI for the current project. If you're switching to another project and you'd like to view the status for it, press `Ctrl+Shift+P` again, type `travis-ci.org Status` and hit return.
 
-## Requirements
+![View Build Status](images/get-status.png)
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+Then you'll see a new item on the bottom menu bar, showing you the status of the last build for your project on Travis CI.
 
-## Extension Settings
+![View Build Status](images/menu-item.png)
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
-
 ### 1.0.0
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+Initial Release.
