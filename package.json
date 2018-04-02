@@ -2,8 +2,12 @@
     "name": "travis-ci-status",
     "displayName": "travis-ci-status",
     "description": "Shows the last build's status from Travis CI",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "publisher": "schultyy",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/schultyy/travis-ci-status.git"
+    },
     "engines": {
         "vscode": "^1.21.0"
     },
