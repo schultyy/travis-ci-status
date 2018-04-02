@@ -64,7 +64,7 @@ class TravisStatusBar {
         this.fetchGitHubSlug()
         .then((slug: String) => {
             this.slug = slug;
-            this.fetchStatus();
+            this.fetchStatusContinuously();
         })
         .catch((error: Error) => {
             console.error(error.message);
@@ -97,17 +97,31 @@ class TravisStatusBar {
         }
     }
 
-    private fetchStatus() {
+    private fetchStatusContinuously() {
+        this.fetchStatus()
+        .then(() => {
+            setInterval(() => {
+                console.log('Fetching');
+                this.fetchStatus();
+            }, 10000);
+        });
+    }
+
+    private fetchStatus() : Promise<any> {
         if(this.slug && this.token) {
-            fetchStatus(this.token, this.slug)
+            this.statusBarItem.text = "Refreshing";
+
+            return fetchStatus(this.token, this.slug)
             .then((buildResponse: BuildResponse) => {
                 if (buildResponse.builds.length > 0) {
                     this.statusBarItem.text = `Build Status(${this.slug}): ${buildResponse.builds[0].state}`;
                 } else {
-                    this.statusBarItem.text = "Build Status(${this.slug}): unknown";
+                    this.statusBarItem.text = `Build Status(${this.slug}): unknown`;
                 }
                 this.statusBarItem.show();
             });
+        } else {
+            return Promise.reject("No Slug and/or Token is set");
         }
     }
 }
