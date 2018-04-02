@@ -114,7 +114,12 @@ export default class TravisStatusBar {
                 this.statusBarItem.show();
             })
             .catch((response) => {
-                if(response.statusCode === 404) {
+                if(response.statusCode === 403) {
+                    window.showErrorMessage(`Permission denied for ${apiClient.host} - Is the access token configured correctly?`);
+                    this.statusBarItem.hide();
+                    this.stopTimer();
+                }
+                else if(response.statusCode === 404) {
                     window.showErrorMessage(`No repository ${this.slug} configured on ${apiClient.host}`);
                     this.statusBarItem.hide();
                     this.stopTimer();
