@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { StatusBarItem, window, workspace } from 'vscode';
 import * as Path from 'path';
 import * as ghslug from 'github-slug';
-import * as request from 'request';
+import { fetchStatus, BuildResponse } from './apiClient';
 
 const configureToken = (travisStatusBar: TravisStatusBar, context: vscode.ExtensionContext) => {
     window.showInputBox({
@@ -98,28 +98,15 @@ class TravisStatusBar {
     }
 
     private fetchStatus() {
-        if(this.slug) {
-            const urlSafeSlug = this.slug.replace("/", "%2F");
-
-            const options = {
-                url: `https://api.travis-ci.com/repo/${urlSafeSlug}/builds?limit=1&finished_at=desc`,
-                headers: {
-                  'Authorization': `token ${this.token}`,
-                  'Travis-API-Version': '3',
-                  'User-Agent': 'API Explorer'
+        if(this.slug && this.token) {
+            fetchStatus(this.token, this.slug)
+            .then((buildResponse: BuildResponse) => {
+                if (buildResponse.builds.length > 0) {
+                    this.statusBarItem.text = `Build Status(${this.slug}): ${buildResponse.builds[0].state}`;
+                } else {
+                    this.statusBarItem.text = "Build Status(${this.slug}): unknown";
                 }
-            };
-
-            request.get(options,(error, response) => {
-                if(response.statusCode === 200) {
-                    const buildResponse = JSON.parse(response.body);
-                    if (buildResponse.builds.length > 0) {
-                        this.statusBarItem.text = `Build Status(${this.slug}): ${buildResponse.builds[0].state}`;
-                    } else {
-                        this.statusBarItem.text = "Build Status(${this.slug}): unknown";
-                    }
-                    this.statusBarItem.show();
-                }
+                this.statusBarItem.show();
             });
         }
     }
