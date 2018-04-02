@@ -26,7 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (apiToken) {
             travisStatusBar.updateBuildStatus(apiToken.toString());
         } else {
-            configureToken(travisStatusBar, context);
+            vscode.window.showInformationMessage('Please configure your API tokens for travis-ci.com and travis-ci.org');
         }
     });
 
