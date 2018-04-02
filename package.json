@@ -2,7 +2,7 @@
     "name": "travis-ci-status",
     "displayName": "travis-ci-status",
     "description": "Shows the last build's status from Travis CI",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "publisher": "schultyy",
     "license": "MIT",
     "repository": {
