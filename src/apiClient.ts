@@ -31,7 +31,7 @@ export class ApiClient {
             headers: {
               'Authorization': `token ${apiToken}`,
               'Travis-API-Version': '3',
-              'User-Agent': 'API Explorer'
+              'User-Agent': 'VSCode travis-status'
             }
         };
 
