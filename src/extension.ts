@@ -35,9 +35,13 @@ export function deactivate() {
 class TravisStatusBar {
     private statusBarItem : StatusBarItem;
 
+    constructor() {
+        this.statusBarItem = window.createStatusBarItem(vscode.StatusBarAlignment.Left);
+    }
+
     public updateBuildStatus() {
         if(!this.statusBarItem) {
-            this.statusBarItem = window.createStatusBarItem(vscode.StatusBarAlignment.Left);
+            return;
         }
 
         this.statusBarItem.text = "Build Status: Unknown";
@@ -47,7 +51,7 @@ class TravisStatusBar {
             let sourceControl = vscode.scm.createSourceControl("git", "git", workspace.workspaceFolders[0].uri);
             if(sourceControl.rootUri) {
                 const gitPath = Path.join(sourceControl.rootUri.fsPath.toString(), ".git", "config");
-                ghslug(gitPath, function(error, slug) {
+                ghslug(gitPath, function(error: Error, slug: String) {
                     if(error) {
                         console.error(error);
                     } else {
