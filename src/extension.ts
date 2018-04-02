@@ -87,7 +87,7 @@ class TravisStatusBar {
             const urlSafeSlug = this.slug.replace("/", "%2F");
 
             const options = {
-                url: `https://api.travis-ci.com/repo/${urlSafeSlug}/builds?limit=1`,
+                url: `https://api.travis-ci.com/repo/${urlSafeSlug}/builds?limit=1&finished_at=desc`,
                 headers: {
                   'Authorization': `token ${this.token}`,
                   'Travis-API-Version': '3',
