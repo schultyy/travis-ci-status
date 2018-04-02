@@ -43,6 +43,10 @@ export default class TravisStatusBar {
 
     dispose() {
         this.statusBarItem.dispose();
+        this.stopTimer();
+    }
+
+    private stopTimer() {
         if(this.timer) {
             clearInterval(this.timer);
         }
@@ -83,8 +87,9 @@ export default class TravisStatusBar {
     private fetchStatus() : Promise<any> {
         if(this.slug && this.token) {
             this.statusBarItem.text = "Refreshing";
+            const apiClient = ApiClient.buildComClient();
 
-            return ApiClient.buildComClient().fetchStatus(this.token, this.slug)
+            return apiClient.fetchStatus(this.token, this.slug)
             .then((buildResponse: BuildResponse) => {
                 if (buildResponse.builds.length > 0) {
                     this.statusBarItem.text = `Build Status(${this.slug}): ${buildResponse.builds[0].state}`;
@@ -92,6 +97,13 @@ export default class TravisStatusBar {
                     this.statusBarItem.text = `Build Status(${this.slug}): unknown`;
                 }
                 this.statusBarItem.show();
+            })
+            .catch((response) => {
+                if(response.statusCode === 404) {
+                    window.showErrorMessage(`No repository ${this.slug} configured on ${apiClient.host}`);
+                    this.statusBarItem.hide();
+                    this.stopTimer();
+                }
             });
         } else {
             return Promise.reject("No Slug and/or Token is set");

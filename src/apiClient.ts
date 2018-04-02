@@ -5,21 +5,25 @@ export interface BuildResponse {
 }
 
 export class ApiClient {
-    private host: string;
+    private _host: string;
 
     public static buildComClient() : ApiClient {
         return new ApiClient("api.travis-ci.com");
     }
 
     constructor(host: string) {
-        this.host = host;
+        this._host = host;
+    }
+
+    public get host() {
+        return this._host;
     }
 
     fetchStatus(apiToken: String, slug: String) : Promise<BuildResponse> {
         const urlSafeSlug = slug.replace("/", "%2F");
 
         const options = {
-            url: `https://${this.host}/repo/${urlSafeSlug}/builds?limit=1&finished_at=desc`,
+            url: `https://${this._host}/repo/${urlSafeSlug}/builds?limit=1&finished_at=desc`,
             headers: {
               'Authorization': `token ${apiToken}`,
               'Travis-API-Version': '3',
