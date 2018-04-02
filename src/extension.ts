@@ -61,25 +61,40 @@ class TravisStatusBar {
         this.statusBarItem.text = "Build Status: Unknown";
         this.statusBarItem.show();
 
-        if(workspace.workspaceFolders) {
-            let sourceControl = vscode.scm.createSourceControl("git", "git", workspace.workspaceFolders[0].uri);
-            if(sourceControl.rootUri) {
-                const gitPath = Path.join(sourceControl.rootUri.fsPath.toString(), ".git", "config");
-                ghslug(gitPath, (error: Error, slug: String) => {
-                    if(error) {
-                        console.error(error);
-                    } else {
-                        this.slug = slug;
-                        console.log('fetching status');
-                        this.fetchStatus();
-                    }
-                });
-            }
-        }
+        this.fetchGitHubSlug()
+        .then((slug: String) => {
+            this.slug = slug;
+            this.fetchStatus();
+        })
+        .catch((error: Error) => {
+            console.error(error.message);
+        });
     }
 
     dispose() {
         this.statusBarItem.dispose();
+    }
+
+    private fetchGitHubSlug() : Promise<String> {
+        if(workspace.workspaceFolders) {
+            let sourceControl = vscode.scm.createSourceControl("git", "git", workspace.workspaceFolders[0].uri);
+            if(sourceControl.rootUri) {
+                const gitPath = Path.join(sourceControl.rootUri.fsPath.toString(), ".git", "config");
+                return new Promise((resolve, reject) => {
+                    ghslug(gitPath, (error: Error, slug: String) => {
+                        if(error) {
+                            reject(error);
+                        } else {
+                            resolve(slug);
+                        }
+                    });
+                });
+            } else {
+                return Promise.reject("No git repository");
+            }
+        } else {
+            return Promise.reject("No workspace");
+        }
     }
 
     private fetchStatus() {
@@ -93,7 +108,7 @@ class TravisStatusBar {
                   'Travis-API-Version': '3',
                   'User-Agent': 'API Explorer'
                 }
-              };
+            };
 
             request.get(options,(error, response) => {
                 if(response.statusCode === 200) {
