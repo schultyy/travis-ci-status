@@ -37,6 +37,8 @@
         "@types/mocha": "^2.2.42"
     },
     "dependencies": {
-        "github-slug": "^2.0.0"
+        "@types/request": "^2.47.0",
+        "github-slug": "^2.0.0",
+        "request": "^2.85.0"
     }
 }
