@@ -2,14 +2,16 @@
 import * as vscode from 'vscode';
 import TravisStatusBar from './TravisStatusBar';
 
+const STATE_COM_API_KEY = 'travis-ci-com-api-key';
+
 const configureToken = (travisStatusBar: TravisStatusBar, context: vscode.ExtensionContext) => {
     vscode.window.showInputBox({
-        placeHolder: "Configure your Travis CI token",
-        prompt: "Configure your Travis CI token"
+        placeHolder: "Configure your travis-ci.com token",
+        prompt: "Configure your travis-ci.com token"
     })
     .then(token => {
         if(token) {
-            context.globalState.update('travis-ci-api-key', token);
+            context.globalState.update(STATE_COM_API_KEY, token);
             travisStatusBar.updateBuildStatus(token);
         }
     });
@@ -20,7 +22,7 @@ let travisStatusBar = new TravisStatusBar();
 export function activate(context: vscode.ExtensionContext) {
 
     let disposableStatus = vscode.commands.registerCommand('extension.travis-status', () => {
-        const apiToken = context.globalState.get('travis-ci-api-key');
+        const apiToken = context.globalState.get(STATE_COM_API_KEY);
         if (apiToken) {
             travisStatusBar.updateBuildStatus(apiToken.toString());
         } else {
@@ -28,7 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    let disposableConfigureToken = vscode.commands.registerCommand('extension.configure-travis-ci-token',() => {
+    let disposableConfigureToken = vscode.commands.registerCommand('extension.configure-travis-ci-com-token',() => {
          configureToken(travisStatusBar, context);
     });
 
