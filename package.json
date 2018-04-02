@@ -11,7 +11,8 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.travis-status",
+        "onCommand:extension.travis-com-status",
+        "onCommand:extension.travis-org-status",
         "onCommand:extension.configure-travis-ci-com-token",
         "onCommand:extension.configure-travis-ci-org-token"
     ],
@@ -19,8 +20,12 @@
     "contributes": {
         "commands": [
             {
-                "command": "extension.travis-status",
-                "title": "Travis CI Status"
+                "command": "extension.travis-com-status",
+                "title": "travis-ci.com Status"
+            },
+            {
+                "command": "extension.travis-org-status",
+                "title": "travis-ci.org Status"
             },
             {
                 "command": "extension.configure-travis-ci-com-token",

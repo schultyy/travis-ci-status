@@ -8,25 +8,29 @@ import {
 import * as ghslug from 'github-slug';
 import * as Path from 'path';
 import { ApiClient, BuildResponse } from './apiClient';
+import TravisEnvironment from './travisEnvironment';
 
 export default class TravisStatusBar {
     private timer: NodeJS.Timer | null;
     private statusBarItem : StatusBarItem;
     private token: String | null;
     private slug: String | null;
+    private travisEnvironment: TravisEnvironment | null;
 
     constructor() {
         this.statusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
         this.token = null;
         this.slug = null;
         this.timer = null;
+        this.travisEnvironment = null;
     }
 
-    public updateBuildStatus(token: String) {
+    public updateBuildStatus(token: String, env: TravisEnvironment) {
         if(!this.statusBarItem) {
             return;
         }
         this.token = token;
+        this.travisEnvironment = env;
 
         this.statusBarItem.text = "Build Status: Unknown";
         this.statusBarItem.show();
@@ -87,7 +91,18 @@ export default class TravisStatusBar {
     private fetchStatus() : Promise<any> {
         if(this.slug && this.token) {
             this.statusBarItem.text = "Refreshing";
-            const apiClient = ApiClient.buildComClient();
+            let apiClient: ApiClient;
+
+            switch(this.travisEnvironment) {
+                case TravisEnvironment.com:
+                    apiClient = ApiClient.buildComClient();
+                    break;
+                case TravisEnvironment.org:
+                    apiClient = ApiClient.buildOrgClient();
+                    break;
+                default:
+                    return Promise.reject(`Invalid Travis environment ${this.travisEnvironment}`);
+            }
 
             return apiClient.fetchStatus(this.token, this.slug)
             .then((buildResponse: BuildResponse) => {

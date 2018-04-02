@@ -11,6 +11,10 @@ export class ApiClient {
         return new ApiClient("api.travis-ci.com");
     }
 
+    public static buildOrgClient() : ApiClient {
+        return new ApiClient("api.travis-ci.org");
+    }
+
     constructor(host: string) {
         this._host = host;
     }

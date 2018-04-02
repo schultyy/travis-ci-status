@@ -1,14 +1,10 @@
 'use strict';
 import * as vscode from 'vscode';
 import TravisStatusBar from './TravisStatusBar';
+import TravisEnvironment from './travisEnvironment';
 
 const STATE_COM_API_KEY = 'travis-ci-com-api-key';
 const STATE_ORG_API_KEY = 'travis-ci-org-api-key';
-
-enum TravisEnvironment {
-    com,
-    org
-}
 
 const configureToken = (travisStatusBar: TravisStatusBar, env: TravisEnvironment, context: vscode.ExtensionContext) => {
     let environmentStr = '';
@@ -32,10 +28,19 @@ let travisStatusBar = new TravisStatusBar();
 
 export function activate(context: vscode.ExtensionContext) {
 
-    let disposableComStatus = vscode.commands.registerCommand('extension.travis-status', () => {
+    let disposableComStatus = vscode.commands.registerCommand('extension.travis-com-status', () => {
         const apiToken = context.globalState.get(STATE_COM_API_KEY);
         if (apiToken) {
-            travisStatusBar.updateBuildStatus(apiToken.toString());
+            travisStatusBar.updateBuildStatus(apiToken.toString(), TravisEnvironment.com);
+        } else {
+            vscode.window.showInformationMessage('Please configure your API tokens for travis-ci.com and travis-ci.org');
+        }
+    });
+
+    let disposableOrgStatus = vscode.commands.registerCommand('extension.travis-org-status', () => {
+        const apiToken = context.globalState.get(STATE_ORG_API_KEY);
+        if (apiToken) {
+            travisStatusBar.updateBuildStatus(apiToken.toString(), TravisEnvironment.org);
         } else {
             vscode.window.showInformationMessage('Please configure your API tokens for travis-ci.com and travis-ci.org');
         }
@@ -46,7 +51,7 @@ export function activate(context: vscode.ExtensionContext) {
          .then(token => {
             if(token) {
                 context.globalState.update(STATE_COM_API_KEY, token);
-                travisStatusBar.updateBuildStatus(token);
+                travisStatusBar.updateBuildStatus(token, TravisEnvironment.com);
             }
         });
     });
@@ -56,13 +61,14 @@ export function activate(context: vscode.ExtensionContext) {
         .then(token => {
             if(token) {
                 context.globalState.update(STATE_ORG_API_KEY, token);
-                travisStatusBar.updateBuildStatus(token);
+                travisStatusBar.updateBuildStatus(token, TravisEnvironment.org);
             }
         });
    });
 
     context.subscriptions.push(travisStatusBar);
     context.subscriptions.push(disposableComStatus);
+    context.subscriptions.push(disposableOrgStatus);
     context.subscriptions.push(disposableConfigureComToken);
     context.subscriptions.push(disposableConfigureOrgToken);
 }
