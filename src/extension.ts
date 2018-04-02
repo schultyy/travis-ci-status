@@ -7,7 +7,7 @@ import * as ghslug from 'github-slug';
 export function activate(context: vscode.ExtensionContext) {
 
 
-    let disposable = vscode.commands.registerCommand('extension.sayHello', () => {
+    let disposable = vscode.commands.registerCommand('extension.travis-status', () => {
         window.showInputBox({
             placeHolder: "Configure your Travis CI token",
             prompt: "Configure your Travis CI token"
