@@ -7,7 +7,7 @@ import {
 } from 'vscode';
 import * as ghslug from 'github-slug';
 import * as Path from 'path';
-import { fetchStatus, BuildResponse } from './apiClient';
+import { ApiClient, BuildResponse } from './apiClient';
 
 export default class TravisStatusBar {
     private timer: NodeJS.Timer | null;
@@ -84,7 +84,7 @@ export default class TravisStatusBar {
         if(this.slug && this.token) {
             this.statusBarItem.text = "Refreshing";
 
-            return fetchStatus(this.token, this.slug)
+            return ApiClient.buildComClient().fetchStatus(this.token, this.slug)
             .then((buildResponse: BuildResponse) => {
                 if (buildResponse.builds.length > 0) {
                     this.statusBarItem.text = `Build Status(${this.slug}): ${buildResponse.builds[0].state}`;
