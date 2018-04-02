@@ -12,7 +12,8 @@
     ],
     "activationEvents": [
         "onCommand:extension.travis-status",
-        "onCommand:extension.configure-travis-ci-com-token"
+        "onCommand:extension.configure-travis-ci-com-token",
+        "onCommand:extension.configure-travis-ci-org-token"
     ],
     "main": "./out/extension",
     "contributes": {
@@ -24,6 +25,10 @@
             {
                 "command": "extension.configure-travis-ci-com-token",
                 "title": "Configure travis-ci.com API token"
+            },
+            {
+                "command": "extension.configure-travis-ci-org-token",
+                "title": "Configure travis-ci.org API token"
             }
         ]
     },
